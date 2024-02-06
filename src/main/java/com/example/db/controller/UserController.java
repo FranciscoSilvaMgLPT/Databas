@@ -22,9 +22,8 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<User> addUser(@RequestBody User user) {
-        var newUser = service.addUser(user);
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(newUser);
+                .body(service.addUser(user));
     }
 
     @GetMapping("/{userId}")
@@ -33,7 +32,7 @@ public class UserController {
     }
     @PutMapping("/{userId}")
     public User updateUser(@PathVariable final Long userId, @RequestBody User user){
-        return service.updateUser(userId, user);
+        return service.updatePutUser(userId, user);
     }
 
     @DeleteMapping("/{userId}")
@@ -43,7 +42,7 @@ public class UserController {
 
     @PatchMapping("/{userId}")
     public User updateUserDetail(@PathVariable final Long userId, @RequestBody User user){
-        return service.updateUserDetail(userId,user);
+        return service.updatePatchUser(userId,user);
     }
 
 
