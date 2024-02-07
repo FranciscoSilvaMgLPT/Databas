@@ -13,7 +13,7 @@ import java.util.Optional;
 @Service
 public class UserService {
     private final UserRepository repository;
-
+    private final static String errorUserNotFound = "User not found!";
     public List<User> getUsers() {
         return repository.findAll().stream().toList();
     }
@@ -27,14 +27,14 @@ public class UserService {
 
     public User getUserById(final Long userId) {
         Optional<User> userAux = repository.findById(userId);
-        if (userAux.isEmpty()) throw new UserNotFoundException("User not found");
+        if (userAux.isEmpty()) throw new UserNotFoundException(errorUserNotFound);
         return repository.getReferenceById(userId);
     }
 
     public User updatePutUser(final Long userId, User user) {
         Optional<User> userAux = repository.findById(userId);
         if (!userAux.isPresent()) {
-            throw new UserNotFoundException("User not found");
+            throw new UserNotFoundException(errorUserNotFound);
         }
 
         User userToUpdate = userAux.get();
@@ -52,14 +52,14 @@ public class UserService {
     public void deleteUser(final Long userId) {
         Optional<User> user = repository.findById(userId);
         if (!user.isPresent()) {
-            throw new UserNotFoundException("User not found");
+            throw new UserNotFoundException(errorUserNotFound);
         }
         repository.delete(user.get());
     }
 
     public User updatePatchUser(final Long userId, User user) {
         Optional<User> userAux = repository.findById(userId);
-        if (userAux.isEmpty()) throw new UserNotFoundException("User not found");
+        if (userAux.isEmpty()) throw new UserNotFoundException(errorUserNotFound);
         if (user.getUsername() == null && user.getPassword() == null && user.getAddress() == null)
             throw new InvalidRequestException("Invalid body request. Username, Password and Email cannot be empty!");
         User updatedUser = userAux.get();
