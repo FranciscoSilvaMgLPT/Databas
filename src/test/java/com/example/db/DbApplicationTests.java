@@ -32,8 +32,7 @@ class DbApplicationTests {
     @Autowired
     private MockMvc mockmvc;
 
-    private ArrayList<User> usersListMock;
-    private User userTest1 = User.builder()
+    private final User userTest1 = User.builder()
             .id(1L)
             .username("TestName")
             .password("TestPass")
@@ -47,13 +46,13 @@ class DbApplicationTests {
                             .build()
             )
             .build();
-    private User userTest2 = User.builder()
+    private final User userTest2 = User.builder()
             .id(2L)
             .username("TestName1")
             .password("TestPass1")
             .email("test1@email.com")
             .build();
-    private User userTest3 = User.builder()
+    private final User userTest3 = User.builder()
             .id(3L)
             .username("TestName2")
             .password("TestPass2")
@@ -63,7 +62,7 @@ class DbApplicationTests {
     @BeforeEach
     public void setup() {
 
-        usersListMock = new ArrayList<>(Arrays.asList(userTest1, userTest2, userTest3));
+        ArrayList<User> usersListMock = new ArrayList<>(Arrays.asList(userTest1, userTest2, userTest3));
         Mockito.mock(UserRepository.class);
         Mockito.when(userRepositoryMock.findAll()).thenReturn(usersListMock);
         Mockito.when(userRepositoryMock.findById(userTest1.getId())).thenReturn(Optional.ofNullable(userTest1));
@@ -73,7 +72,7 @@ class DbApplicationTests {
     }
 
     @Test
-    public void getUsersShouldReturnListUser() throws Exception {
+    void getUsersShouldReturnListUser() throws Exception {
 
         mockmvc.perform(MockMvcRequestBuilders
                         .get("/user")
@@ -86,7 +85,7 @@ class DbApplicationTests {
     }
 
     @Test
-    public void getUserByIdShouldReturnUser() throws Exception {
+    void getUserByIdShouldReturnUser() throws Exception {
 
         mockmvc.perform(MockMvcRequestBuilders
                         .get("/user")
@@ -99,7 +98,7 @@ class DbApplicationTests {
     }
 
     @Test
-    public void deleteUserShouldReduceSize() throws Exception {
+    void deleteUserShouldReduceSize() throws Exception {
         mockmvc.perform(MockMvcRequestBuilders
                         .delete("/user/{id}", 1)
                         .contentType(MediaType.APPLICATION_JSON))
@@ -108,7 +107,7 @@ class DbApplicationTests {
     }
 
     @Test
-    public void updatePutUserShouldReturnUser() throws Exception {
+    void updatePutUserShouldReturnUser() throws Exception {
         ObjectMapper objectMapper = new ObjectMapper();
         User updatedUser = User.builder()
                 .username("TestNameUpdate")
@@ -140,7 +139,7 @@ class DbApplicationTests {
     }
 
     @Test
-    public void updatePatchUserShouldReturnUser() throws Exception {
+    void updatePatchUserShouldReturnUser() throws Exception {
         ObjectMapper objectMapper = new ObjectMapper();
         User updatedUser = User.builder()
                 .username("TestNameUpdatePatch")
@@ -157,7 +156,7 @@ class DbApplicationTests {
     }
 
     @Test
-    public void addUserReturnUser() throws Exception {
+    void addUserReturnUser() throws Exception {
         ObjectMapper objectMapper = new ObjectMapper();
         User addUser = User.builder()
                 .id(4L)
@@ -179,7 +178,7 @@ class DbApplicationTests {
 
 
     @Test
-    public void addUserErrorNoField() throws Exception {
+    void addUserErrorNoField() throws Exception {
         ObjectMapper objectMapper = new ObjectMapper();
         User addUser = User.builder()
                 .id(4L)
@@ -192,7 +191,7 @@ class DbApplicationTests {
     }
 
     @Test
-    public void updatePatchUserErrorNotFound() throws Exception {
+    void updatePatchUserErrorNotFound() throws Exception {
         ObjectMapper objectMapper = new ObjectMapper();
         User updatedUser = User.builder()
                 .build();
@@ -206,7 +205,7 @@ class DbApplicationTests {
     }
 
     @Test
-    public void deleteUserErrorNotFound() throws Exception {
+    void deleteUserErrorNotFound() throws Exception {
         mockmvc.perform(MockMvcRequestBuilders
                         .delete("/user/{id}", 7)
                         .contentType(MediaType.APPLICATION_JSON))
@@ -214,7 +213,7 @@ class DbApplicationTests {
     }
 
     @Test
-    public void updatePutErrorEmptyFields() throws Exception {
+    void updatePutErrorEmptyFields() throws Exception {
         ObjectMapper objectMapper = new ObjectMapper();
         User updatedUser = User.builder()
                 .build();
@@ -227,7 +226,7 @@ class DbApplicationTests {
     }
 
     @Test
-    public void updatePatchErrorEmptyFields() throws Exception {
+    void updatePatchErrorEmptyFields() throws Exception {
         ObjectMapper objectMapper = new ObjectMapper();
         User updatedUser = User.builder()
                 .build();
@@ -240,7 +239,7 @@ class DbApplicationTests {
     }
 
     @Test
-    public void getUserByIdErrorUserNotFound() throws Exception {
+    void getUserByIdErrorUserNotFound() throws Exception {
         mockmvc.perform(MockMvcRequestBuilders
                         .get("/user/{id}",99)
                         .contentType(MediaType.APPLICATION_JSON))
