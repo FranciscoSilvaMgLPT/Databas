@@ -1,4 +1,5 @@
 package com.example.db.UserServiceTest;
+
 import com.example.db.entity.Address;
 import com.example.db.entity.User;
 import com.example.db.exceptions.UserNotFoundException;
@@ -11,6 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
 import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -22,10 +24,11 @@ class UserServiceTest {
     @InjectMocks
     private UserService userService;
 
+    User userTest = new User();
 
     @Test
     void testGetUsers() {
-         when(userRepository.findAll()).thenReturn(List.of(new User(), new User()));
+        when(userRepository.findAll()).thenReturn(List.of(new User(), new User()));
 
         List<User> users = userService.getUsers();
 
@@ -77,6 +80,15 @@ class UserServiceTest {
         assertTrue(user2.isPresent());
     }
 
+    @Test
+    void updatePutUser_UserNotFound() {
+        assertThrows(UserNotFoundException.class, () -> userService.updatePutUser(1L, userTest));
+    }
+
+    @Test
+    void updatePatchUser_UserNotFound() {
+        assertThrows(UserNotFoundException.class, () -> userService.updatePatchUser(1L, userTest));
+    }
 
     @Test
     void updatePutUser() {
@@ -90,12 +102,12 @@ class UserServiceTest {
                 .username("updatedName")
                 .password("updatedPass")
                 .email("email@email.com")
-                .address(   Address.builder()
-                                .country("Portugal")
-                                .city("Porto")
-                                .street("Rua das ruas")
-                                .number(10)
-                                .build()).build();
+                .address(Address.builder()
+                        .country("Portugal")
+                        .city("Porto")
+                        .street("Rua das ruas")
+                        .number(10)
+                        .build()).build();
 
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
         when(userRepository.save(updatedUser)).thenReturn(updatedUser);
@@ -106,8 +118,8 @@ class UserServiceTest {
         assertEquals(updatedUser.getPassword(), result.getPassword());
         assertEquals(updatedUser.getEmail(), result.getEmail());
         assertEquals(updatedUser.getAddress(), result.getAddress());
-     //   assertThrows(UserNotFoundException,);
     }
+
 
     @Test
     void deleteUser() {
