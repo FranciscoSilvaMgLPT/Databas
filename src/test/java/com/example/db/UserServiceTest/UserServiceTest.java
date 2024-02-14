@@ -4,16 +4,17 @@ import com.example.db.entity.User;
 import com.example.db.exceptions.UserNotFoundException;
 import com.example.db.repository.UserRepository;
 import com.example.db.service.UserService;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.springframework.boot.test.context.SpringBootTest;
+
 import java.util.List;
 import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+@SpringBootTest
 class UserServiceTest {
     @Mock
     private UserRepository userRepository;
@@ -21,10 +22,6 @@ class UserServiceTest {
     @InjectMocks
     private UserService userService;
 
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
-    }
 
     @Test
     void testGetUsers() {
