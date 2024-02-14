@@ -25,8 +25,7 @@ class UserServiceTest {
 
     @Test
     void testGetUsers() {
-        // Mock UserRepository's findAll method
-        when(userRepository.findAll()).thenReturn(List.of(new User(), new User()));
+         when(userRepository.findAll()).thenReturn(List.of(new User(), new User()));
 
         List<User> users = userService.getUsers();
 
