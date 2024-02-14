@@ -25,10 +25,10 @@ public class UserService {
             return repository.save(user);
     }
 
-    public User getUserById(final Long userId) {
+    public Optional<User> getUserById(final Long userId) {
         Optional<User> userAux = repository.findById(userId);
         if (userAux.isEmpty()) throw new UserNotFoundException(ERROR_USER_NOT_FOUND);
-        return repository.getReferenceById(userId);
+        return userAux;
     }
 
     public User updatePutUser(final Long userId, User user) {

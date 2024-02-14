@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/user")
@@ -27,7 +28,7 @@ public class UserController {
     }
 
     @GetMapping("/{userId}")
-    public User getUserById(@PathVariable final Long userId) {
+    public Optional<User> getUserById(@PathVariable final Long userId) {
         return service.getUserById(userId);
     }
     @PutMapping("/{userId}")

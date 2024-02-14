@@ -1,4 +1,4 @@
-package com.example.db;
+package com.example.db.UserControllerTest;
 
 import com.example.db.entity.Address;
 import com.example.db.entity.User;
@@ -14,9 +14,11 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Optional;
+
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -24,7 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @AutoConfigureMockMvc
 @SpringBootTest
-class DbApplicationTests {
+class UserControllerTest {
 
 
     @MockBean
@@ -65,9 +67,8 @@ class DbApplicationTests {
         ArrayList<User> usersListMock = new ArrayList<>(Arrays.asList(userTest1, userTest2, userTest3));
         Mockito.mock(UserRepository.class);
         Mockito.when(userRepositoryMock.findAll()).thenReturn(usersListMock);
-        Mockito.when(userRepositoryMock.findById(userTest1.getId())).thenReturn(Optional.ofNullable(userTest1));
+        Mockito.when(userRepositoryMock.findById(userTest1.getId())).thenReturn(Optional.of(userTest1));
         Mockito.when(userRepositoryMock.save(userTest1)).thenReturn(userTest1);
-        //   Mockito.when(userRepositoryMock.delete(userTest1)).then(usersListMock.remove(userTest1));
 
     }
 
@@ -206,8 +207,12 @@ class DbApplicationTests {
 
     @Test
     void deleteUserErrorNotFound() throws Exception {
+
+        Long id = 7L;
+        Mockito.when(userRepositoryMock.findById(id)).thenReturn(Optional.empty());
+
         mockmvc.perform(MockMvcRequestBuilders
-                        .delete("/user/{id}", 7)
+                        .delete("/user/{id}", id)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
     }
@@ -247,6 +252,3 @@ class DbApplicationTests {
     }
 
 }
-
-
-
