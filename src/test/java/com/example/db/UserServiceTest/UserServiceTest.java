@@ -34,7 +34,7 @@ class UserServiceTest {
     }
 
     @Test
-    void addUPostUser() {
+    void addPostUser() {
         User user = new User();
         user.setUsername("test");
         user.setPassword("password");
@@ -86,6 +86,11 @@ class UserServiceTest {
     @Test
     void updatePatchUser_UserNotFound() {
         assertThrows(UserNotFoundException.class, () -> userService.updatePatchUser(1L, userTest));
+    }
+
+    @Test
+    void deleteUser_UserNotFound() {
+        assertThrows(UserNotFoundException.class, () -> userService.deleteUser(1L));
     }
 
     @Test
