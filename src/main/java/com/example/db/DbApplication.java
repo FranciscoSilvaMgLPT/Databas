@@ -6,7 +6,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-@OpenAPIDefinition(info = @Info(title = "Swagger Database", version = "1", description = "API para trabalho de Database"))
+@OpenAPIDefinition(info = @Info(title = "Swagger Api Database Security", version = "1", description =
+		"Swagger Api Database Security Work by Mindera School"))
 
 public class DbApplication {
 

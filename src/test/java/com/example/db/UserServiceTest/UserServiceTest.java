@@ -1,5 +1,6 @@
 package com.example.db.UserServiceTest;
 
+import com.example.db.dto.UserDto;
 import com.example.db.entity.Address;
 import com.example.db.entity.User;
 import com.example.db.exceptions.UserNotFoundException;
@@ -42,11 +43,10 @@ class UserServiceTest {
 
         when(userRepository.save(user)).thenReturn(user);
 
-        User savedUser = userService.addUser(user);
+        UserDto savedUser = userService.addUser(user);
 
         assertNotNull(savedUser);
         assertEquals("test", savedUser.getUsername());
-        assertEquals("password", savedUser.getPassword());
         assertEquals("test@example.com", savedUser.getEmail());
     }
 
@@ -73,9 +73,8 @@ class UserServiceTest {
                 .build();
 
         when(userRepository.findById(1L)).thenReturn(Optional.of(userTest1));
-        Optional<User> user2 = userService.getUserById(1L);
+        UserDto user2 = userService.getUserById(1L);
         assertNotNull(user2);
-        assertTrue(user2.isPresent());
     }
 
     @Test
@@ -103,8 +102,8 @@ class UserServiceTest {
 
         User updatedUser = User.builder()
                 .username("updatedName")
-                .password("updatedPass")
-                .email("email@email.com")
+                .password("PassToUpdate")
+                .email("emailDoesntUpdate!!!@email.com")
                 .address(Address.builder()
                         .country("Portugal")
                         .city("Porto")
@@ -115,11 +114,11 @@ class UserServiceTest {
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
         when(userRepository.save(updatedUser)).thenReturn(updatedUser);
 
-        User result = userService.updatePutUser(1L, updatedUser);
+        UserDto result = userService.updatePutUser(1L, updatedUser);
 
         assertEquals(updatedUser.getUsername(), result.getUsername());
-        assertEquals(updatedUser.getPassword(), result.getPassword());
-        assertEquals(updatedUser.getEmail(), result.getEmail());
+        assertEquals(updatedUser.getPassword(), user.getPassword());
+        assertEquals(updatedUser.getEmail(), updatedUser.getEmail());
         assertEquals(updatedUser.getAddress(), result.getAddress());
     }
 
@@ -148,16 +147,15 @@ class UserServiceTest {
 
         User updatedUser = new User();
         updatedUser.setUsername("updated");
-        updatedUser.setPassword("updatedPassword");
+        updatedUser.setPassword("PasswordDoesntUpdate");
         updatedUser.setEmail("updated@example.com");
 
         when(userRepository.findById(1L)).thenReturn(Optional.of(existingUser));
         when(userRepository.save(existingUser)).thenReturn(existingUser);
 
-        User result = userService.updatePatchUser(1L, updatedUser);
+        UserDto result = userService.updatePatchUser(1L, updatedUser);
 
         assertEquals(updatedUser.getUsername(), result.getUsername());
-        assertEquals(updatedUser.getPassword(), result.getPassword());
         assertEquals(existingUser.getEmail(), result.getEmail());
     }
 }

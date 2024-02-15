@@ -1,19 +1,14 @@
-/*
 package com.example.db.dto;
 
 import com.example.db.entity.Address;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
-@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class UserDto {
-
-    private Long id;
+    private String username;
     private String email;
-    private String password;
     private Address address;
 }
-*/

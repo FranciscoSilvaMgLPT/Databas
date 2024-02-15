@@ -1,4 +1,5 @@
 package com.example.db.controller;
+import com.example.db.dto.UserDto;
 import com.example.db.entity.User;
 import com.example.db.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -22,17 +23,17 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<User> addUser(@RequestBody User user) {
+    public ResponseEntity<UserDto> addUser(@RequestBody User user) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(service.addUser(user));
     }
 
     @GetMapping("/{userId}")
-    public Optional<User> getUserById(@PathVariable final Long userId) {
+    public UserDto getUserById(@PathVariable final Long userId) {
         return service.getUserById(userId);
     }
     @PutMapping("/{userId}")
-    public User updateUser(@PathVariable final Long userId, @RequestBody User user){
+    public UserDto updateUser(@PathVariable final Long userId, @RequestBody User user){
         return service.updatePutUser(userId, user);
     }
 
@@ -42,7 +43,7 @@ public class UserController {
     }
 
     @PatchMapping("/{userId}")
-    public User updateUserDetail(@PathVariable final Long userId, @RequestBody User user){
+    public UserDto updateUserDetail(@PathVariable final Long userId, @RequestBody User user){
         return service.updatePatchUser(userId,user);
     }
 
