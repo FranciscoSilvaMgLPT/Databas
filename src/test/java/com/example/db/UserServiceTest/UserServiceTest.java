@@ -65,7 +65,7 @@ class UserServiceTest {
 
     @Test
     void getUserById_UserNotFound() {
-        assertThrows(UserNotFoundException.class, () -> userService.getUserById(1L));
+        assertThrows(UserNotFoundException.class, () -> userService.getUserById(-10L));
     }
 
     @Test

@@ -239,7 +239,7 @@ class UserControllerTest{
     @Test
     void getUserByIdErrorUserNotFound() throws Exception {
         mockmvc.perform(MockMvcRequestBuilders
-                        .get("/user/{id}",99)
+                        .get("/user/{id}",-99)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
     }
