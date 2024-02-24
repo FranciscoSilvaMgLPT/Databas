@@ -18,12 +18,12 @@ public class UserController {
     private final UserService service;
 
     @GetMapping
-    public List<User> getUsers() {
+    public List<UserDto> getUsers() {
         return service.getUsers();
     }
 
     @PostMapping
-    public ResponseEntity<UserDto> addUser(@RequestBody User user) {
+    public ResponseEntity<UserDto> addUser(@RequestBody UserDto user) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(service.addUser(user));
     }
@@ -33,7 +33,7 @@ public class UserController {
         return service.getUserById(userId);
     }
     @PutMapping("/{userId}")
-    public UserDto updateUser(@PathVariable final Long userId, @RequestBody User user){
+    public UserDto updateUser(@PathVariable final Long userId, @RequestBody UserDto user){
         return service.updatePutUser(userId, user);
     }
 
@@ -43,7 +43,7 @@ public class UserController {
     }
 
     @PatchMapping("/{userId}")
-    public UserDto updateUserDetail(@PathVariable final Long userId, @RequestBody User user){
+    public UserDto updateUserDetail(@PathVariable final Long userId, @RequestBody UserDto user){
         return service.updatePatchUser(userId,user);
     }
 

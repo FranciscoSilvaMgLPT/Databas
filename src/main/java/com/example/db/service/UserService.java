@@ -7,6 +7,7 @@ import com.example.db.exceptions.UserNotFoundException;
 import com.example.db.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -15,20 +16,33 @@ import java.util.Optional;
 public class UserService {
     private final UserRepository repository;
     private static final String ERROR_USER_NOT_FOUND = "User not found!";
-    public List<User> getUsers() {
-        return repository.findAll().stream().toList();
+
+    public List<UserDto> getUsers() {
+        return repository.findAll().stream()
+                .map(e -> UserDto.builder()
+                        .username(e.getUsername())
+                        .password(e.getPassword())
+                        .email(e.getEmail())
+                        .address(e.getAddress())
+                        .build())
+                .toList();
     }
 
-    public UserDto addUser(User user) {
-        if (user.getUsername() == null || user.getPassword() == null || user.getEmail() == null) {
+    public UserDto addUser(UserDto userDto) {
+        if (userDto.getUsername() == null || userDto.getPassword() == null || userDto.getEmail() == null) {
             throw new InvalidRequestException("Username, password and email cannot be empty");
         }
-        repository.save(user);
-            return UserDto.builder()
-                    .username(user.getUsername())
-                    .email(user.getEmail())
-                    .address(user.getAddress())
-                    .build();
+        repository.save(User.builder()
+                .username(userDto.getUsername())
+                .password(userDto.getPassword())
+                .email(userDto.getEmail())
+                .address(userDto.getAddress())
+                .build());
+        return UserDto.builder()
+                .username(userDto.getUsername())
+                .email(userDto.getEmail())
+                .address(userDto.getAddress())
+                .build();
     }
 
     public UserDto getUserById(final Long userId) {
@@ -41,24 +55,22 @@ public class UserService {
                 .build();
     }
 
-    public UserDto updatePutUser(final Long userId, User user) {
+    public UserDto updatePutUser(final Long userId, UserDto userDto) {
         Optional<User> userAux = repository.findById(userId);
         if (userAux.isEmpty()) {
             throw new UserNotFoundException(ERROR_USER_NOT_FOUND);
         }
 
         User userToUpdate = userAux.get();
-        if (user.getUsername() == null || user.getPassword() == null || user.getAddress() == null) {
-            throw new InvalidRequestException("Invalid body request. Username, Password and Address cannot be empty!");
+        if (userDto.getUsername() == null || userDto.getEmail() == null || userDto.getPassword() == null || userDto.getAddress() == null) {
+            throw new InvalidRequestException("Invalid body request. Username, Password, Email and Address cannot be empty!");
         }
-        userToUpdate.setUsername(user.getUsername());
-        userToUpdate.setPassword(user.getPassword());
-        userToUpdate.setAddress(user.getAddress());
+        userToUpdate.setUsername(userDto.getUsername());
+        userToUpdate.setPassword(userDto.getPassword());
+        userToUpdate.setAddress(userDto.getAddress());
+        userToUpdate.setEmail(userDto.getEmail());
         repository.save(userToUpdate);
-        return UserDto.builder()
-                .username(userAux.get().getUsername())
-                .address(userAux.get().getAddress())
-                .build();
+        return userDto;
     }
 
     public void deleteUser(final Long userId) {
@@ -69,21 +81,17 @@ public class UserService {
         repository.delete(user.get());
     }
 
-    public UserDto updatePatchUser(final Long userId, User user) {
+    public UserDto updatePatchUser(final Long userId, UserDto userDto) {
         Optional<User> userAux = repository.findById(userId);
         if (userAux.isEmpty()) throw new UserNotFoundException(ERROR_USER_NOT_FOUND);
-        if (user.getUsername() == null && user.getPassword() == null && user.getAddress() == null)
+        if (userDto.getUsername() == null && userDto.getPassword() == null && userDto.getAddress() == null)
             throw new InvalidRequestException("Invalid body request. Username, Password and Email cannot be empty!");
         User updatedUser = userAux.get();
-        if (user.getUsername() != null) updatedUser.setUsername(user.getUsername());
-        if (user.getPassword() != null) updatedUser.setPassword(user.getPassword());
-        if (user.getAddress() != null) updatedUser.setAddress(user.getAddress());
+        if (userDto.getUsername() != null) updatedUser.setUsername(userDto.getUsername());
+        if (userDto.getPassword() != null) updatedUser.setPassword(userDto.getPassword());
+        if (userDto.getAddress() != null) updatedUser.setAddress(userDto.getAddress());
         repository.save(updatedUser);
-        return UserDto.builder()
-                .username(userAux.get().getUsername())
-                .email(userAux.get().getEmail())
-                .address(userAux.get().getAddress())
-                .build();
+        return userDto;
 
     }
 }

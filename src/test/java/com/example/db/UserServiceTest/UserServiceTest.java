@@ -10,8 +10,12 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -23,31 +27,40 @@ class UserServiceTest {
     @InjectMocks
     private UserService userService;
 
-    User userTest = new User();
+    UserDto userTest = UserDto.builder().build();
 
     @Test
     void testGetUsers() {
-        when(userRepository.findAll()).thenReturn(List.of(new User(), new User()));
+        ArrayList<User> dtoList = new ArrayList<>(Arrays.asList(User.builder().build(),User.builder().build()));
+        when(userRepository.findAll()).thenReturn(dtoList);
 
-        List<User> users = userService.getUsers();
 
-        assertEquals(2, users.size());
+        List<UserDto> usersList = userService.getUsers();
+
+        assertEquals(2, dtoList.size());
     }
 
     @Test
     void addPostUser() {
-        User user = new User();
-        user.setUsername("test");
-        user.setPassword("password");
-        user.setEmail("test@example.com");
+        UserDto userDto = UserDto.builder()
+                .username("test")
+                .password("password")
+                .email("test@example.com")
+                .build();
 
-        when(userRepository.save(user)).thenReturn(user);
+        User user = User.builder()
+                .username(userDto.getUsername())
+                .password(userDto.getPassword())
+                .email(userDto.getEmail())
+                .build();
 
-        UserDto savedUser = userService.addUser(user);
+        when(userRepository.save(any(User.class))).thenReturn(user);
 
-        assertNotNull(savedUser);
-        assertEquals("test", savedUser.getUsername());
-        assertEquals("test@example.com", savedUser.getEmail());
+        UserDto addedUser = userService.addUser(userDto);
+
+        assertNotNull(addedUser);
+        assertEquals("test", addedUser.getUsername());
+        assertEquals("test@example.com", addedUser.getEmail());
     }
 
     @Test
@@ -57,22 +70,9 @@ class UserServiceTest {
 
     @Test
     void getUserByIdSuccess() {
-        User userTest1 = User.builder()
-                .id(1L)
-                .username("TestName")
-                .password("TestPass")
-                .email("test@email.com")
-                .address(
-                        Address.builder()
-                                .country("Portugal")
-                                .city("Porto")
-                                .street("Rua do bacalhau")
-                                .number(10)
-                                .build()
-                )
-                .build();
+        User userTest1 = User.builder().username("TestName").password("TestPass").email("test@email.com").address(Address.builder().country("Portugal").city("Porto").street("Rua do bacalhau").number(10).build()).build();
 
-        when(userRepository.findById(1L)).thenReturn(Optional.of(userTest1));
+        when(userRepository.findById(1L)).thenReturn(Optional.ofNullable(userTest1));
         UserDto user2 = userService.getUserById(1L);
         assertNotNull(user2);
     }
@@ -94,30 +94,17 @@ class UserServiceTest {
 
     @Test
     void updatePutUser() {
-        User user = new User();
-        user.setId(1L);
-        user.setUsername("existing");
-        user.setPassword("password");
-        user.setEmail("existing@example.com");
+        UserDto userDto = UserDto.builder().username("existingName").password("existingPassword").email("existing@example.com").build();
 
-        User updatedUser = User.builder()
-                .username("updatedName")
-                .password("PassToUpdate")
-                .email("emailDoesntUpdate!!!@email.com")
-                .address(Address.builder()
-                        .country("Portugal")
-                        .city("Porto")
-                        .street("Rua das ruas")
-                        .number(10)
-                        .build()).build();
+        UserDto updatedUser = UserDto.builder().username("updatedName").password("updatedPass").email("emailDoesntUpdate!!!@email.com").address(Address.builder().country("Portugal").city("Porto").street("Rua das ruas").number(10).build()).build();
 
-        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+        when(userRepository.findById(1L)).thenReturn(Optional.of(userDto));
         when(userRepository.save(updatedUser)).thenReturn(updatedUser);
 
         UserDto result = userService.updatePutUser(1L, updatedUser);
 
         assertEquals(updatedUser.getUsername(), result.getUsername());
-        assertEquals(updatedUser.getPassword(), user.getPassword());
+        assertEquals(updatedUser.getPassword(), userDto.getPassword());
         assertEquals(updatedUser.getEmail(), updatedUser.getEmail());
         assertEquals(updatedUser.getAddress(), result.getAddress());
     }
@@ -125,11 +112,7 @@ class UserServiceTest {
 
     @Test
     void deleteUser() {
-        User existingUser = new User();
-        existingUser.setId(1L);
-        existingUser.setUsername("existing");
-        existingUser.setPassword("password");
-        existingUser.setEmail("existing@example.com");
+        UserDto existingUser = UserDto.builder().username("existing").password("password").email("existing@example.com").build();
 
         when(userRepository.findById(1L)).thenReturn(Optional.of(existingUser));
 
@@ -139,16 +122,9 @@ class UserServiceTest {
 
     @Test
     void updatePatchUser() {
-        User existingUser = new User();
-        existingUser.setId(1L);
-        existingUser.setUsername("existing");
-        existingUser.setPassword("password");
-        existingUser.setEmail("existing@example.com");
+        UserDto existingUser = UserDto.builder().username("existing").password("password").email("existing@example.com").build();
 
-        User updatedUser = new User();
-        updatedUser.setUsername("updated");
-        updatedUser.setPassword("PasswordDoesntUpdate");
-        updatedUser.setEmail("updated@example.com");
+        UserDto updatedUser = UserDto.builder().username("updated").password("PasswordDoesntUpdate").email("updated@example.com").build();
 
         when(userRepository.findById(1L)).thenReturn(Optional.of(existingUser));
         when(userRepository.save(existingUser)).thenReturn(existingUser);

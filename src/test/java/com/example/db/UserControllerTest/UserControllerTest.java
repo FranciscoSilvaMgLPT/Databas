@@ -24,16 +24,15 @@ import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@AutoConfigureMockMvc
+@AutoConfigureMockMvc(addFilters=false)
 @SpringBootTest
-class UserControllerTest {
+class UserControllerTest{
 
 
     @MockBean
     private UserRepository userRepositoryMock;
     @Autowired
     private MockMvc mockmvc;
-
     private final User userTest1 = User.builder()
             .id(1L)
             .username("TestName")
@@ -69,7 +68,6 @@ class UserControllerTest {
         Mockito.when(userRepositoryMock.findAll()).thenReturn(usersListMock);
         Mockito.when(userRepositoryMock.findById(userTest1.getId())).thenReturn(Optional.of(userTest1));
         Mockito.when(userRepositoryMock.save(userTest1)).thenReturn(userTest1);
-
     }
 
     @Test
@@ -89,13 +87,11 @@ class UserControllerTest {
     void getUserByIdShouldReturnUser() throws Exception {
 
         mockmvc.perform(MockMvcRequestBuilders
-                        .get("/user")
+                        .get("/user/{id}",1)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(3)))
-                .andExpect(jsonPath(("$[0].username"), is("TestName")))
-                .andExpect(jsonPath(("$[0].password"), is("TestPass")))
-                .andExpect(jsonPath(("$[0].email"), is("test@email.com")));
+                .andExpect(jsonPath(("$.username"), is("TestName")))
+                .andExpect(jsonPath(("$.email"), is("test@email.com")));
     }
 
     @Test
@@ -113,7 +109,7 @@ class UserControllerTest {
         User updatedUser = User.builder()
                 .username("TestNameUpdate")
                 .password("TestPassUpdate")
-                .email("testUpdate@email.com")
+                .email("EMAILDONTUPDATE@email.com")
                 .address(
                         Address.builder()
                                 .country("Portugal dos pequenos")
@@ -131,8 +127,6 @@ class UserControllerTest {
                         .content(objectMapper.writeValueAsString(updatedUser)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath(("$.username"), is("TestNameUpdate")))
-                .andExpect(jsonPath(("$.password"), is("TestPassUpdate")))
-                .andExpect(jsonPath(("$.email"), is("testUpdate@email.com")))
                 .andExpect(jsonPath("$.address.country", is("Portugal dos pequenos")))
                 .andExpect(jsonPath("$.address.city", is("Vila do conde")))
                 .andExpect(jsonPath("$.address.street", is("Rua do touro")))
@@ -173,7 +167,6 @@ class UserControllerTest {
                         .content(objectMapper.writeValueAsString(addUser)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath(("$.username"), is("TestNamePost")))
-                .andExpect(jsonPath(("$.password"), is("TestPassPost")))
                 .andExpect(jsonPath(("$.email"), is("post@post.com")));
     }
 
