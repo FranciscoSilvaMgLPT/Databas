@@ -2,14 +2,13 @@ package com.example.db.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Builder
 @Getter
 @Setter
-
+@NoArgsConstructor
+@AllArgsConstructor
 @Embeddable
 public class Address {
     @Column

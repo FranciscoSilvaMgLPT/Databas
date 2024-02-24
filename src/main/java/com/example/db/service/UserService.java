@@ -1,6 +1,7 @@
 package com.example.db.service;
 
 import com.example.db.dto.UserDto;
+import com.example.db.entity.Address;
 import com.example.db.entity.User;
 import com.example.db.exceptions.InvalidRequestException;
 import com.example.db.exceptions.UserNotFoundException;
@@ -20,6 +21,7 @@ public class UserService {
     public List<UserDto> getUsers() {
         return repository.findAll().stream()
                 .map(e -> UserDto.builder()
+                        .id(e.getId())
                         .username(e.getUsername())
                         .password(e.getPassword())
                         .email(e.getEmail())
@@ -36,7 +38,11 @@ public class UserService {
                 .username(userDto.getUsername())
                 .password(userDto.getPassword())
                 .email(userDto.getEmail())
-                .address(userDto.getAddress())
+                .address(Address.builder()
+                        .country(userDto.getAddress().getCountry())
+                        .city(userDto.getAddress().getCity())
+                        .street(userDto.getAddress().getStreet())
+                        .number(userDto.getAddress().getNumber()).build())
                 .build());
         return UserDto.builder()
                 .username(userDto.getUsername())
