@@ -189,7 +189,7 @@ class UserControllerTest{
         ObjectMapper objectMapper = new ObjectMapper();
         User updatedUser = User.builder()
                 .build();
-        Mockito.when(userRepositoryMock.findById(userTest1.getId())).thenReturn(Optional.of(userTest1));
+        Mockito.when(userRepositoryMock.findById(1L)).thenReturn(Optional.empty());
         Mockito.when(userRepositoryMock.save(updatedUser)).thenReturn(updatedUser);
         mockmvc.perform(MockMvcRequestBuilders
                         .patch("/user/8")

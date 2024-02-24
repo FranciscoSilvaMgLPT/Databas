@@ -8,7 +8,6 @@ import com.example.db.exceptions.UserNotFoundException;
 import com.example.db.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Optional;
 
