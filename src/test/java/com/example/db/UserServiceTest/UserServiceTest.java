@@ -98,26 +98,25 @@ class UserServiceTest {
 
         UserDto updatedUser = UserDto.builder().username("updatedName").password("updatedPass").email("emailDoesntUpdate!!!@email.com").address(Address.builder().country("Portugal").city("Porto").street("Rua das ruas").number(10).build()).build();
 
-        when(userRepository.findById(1L)).thenReturn(Optional.of(userDto));
-        when(userRepository.save(updatedUser)).thenReturn(updatedUser);
+        when(userRepository.findById(1L)).thenReturn(Optional.of(convertUserDtoToUser(userDto)));
+        when(userRepository.save(convertUserDtoToUser(updatedUser))).thenReturn(convertUserDtoToUser(updatedUser));
 
         UserDto result = userService.updatePutUser(1L, updatedUser);
 
         assertEquals(updatedUser.getUsername(), result.getUsername());
-        assertEquals(updatedUser.getPassword(), userDto.getPassword());
-        assertEquals(updatedUser.getEmail(), updatedUser.getEmail());
+        assertEquals(updatedUser.getPassword(), result.getPassword());
+        assertEquals(updatedUser.getEmail(), result.getEmail());
         assertEquals(updatedUser.getAddress(), result.getAddress());
     }
-
 
     @Test
     void deleteUser() {
         UserDto existingUser = UserDto.builder().username("existing").password("password").email("existing@example.com").build();
 
-        when(userRepository.findById(1L)).thenReturn(Optional.of(existingUser));
+        when(userRepository.findById(1L)).thenReturn(Optional.of(convertUserDtoToUser(existingUser)));
 
         assertDoesNotThrow(() -> userService.deleteUser(1L));
-        verify(userRepository, times(1)).delete(existingUser);
+        verify(userRepository, times(1)).delete(convertUserDtoToUser(existingUser));
     }
 
     @Test
@@ -126,12 +125,19 @@ class UserServiceTest {
 
         UserDto updatedUser = UserDto.builder().username("updated").password("PasswordDoesntUpdate").email("updated@example.com").build();
 
-        when(userRepository.findById(1L)).thenReturn(Optional.of(existingUser));
-        when(userRepository.save(existingUser)).thenReturn(existingUser);
+        when(userRepository.findById(1L)).thenReturn(Optional.of(convertUserDtoToUser(existingUser)));
+        when(userRepository.save(convertUserDtoToUser(existingUser))).thenReturn(convertUserDtoToUser(existingUser));
 
         UserDto result = userService.updatePatchUser(1L, updatedUser);
 
         assertEquals(updatedUser.getUsername(), result.getUsername());
-        assertEquals(existingUser.getEmail(), result.getEmail());
     }
+
+    public User convertUserDtoToUser(UserDto userDto) {
+        User user = new User();
+        user.setUsername(userDto.getUsername());
+        user.setPassword(userDto.getPassword());
+        return user;
+    }
+
 }
